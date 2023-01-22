@@ -38,7 +38,9 @@ public class DragonRepository : IDragonRepository
 
     public Dragon? Get(int id)
     {
-        return _db.Dragons.Find(id);
+        return _db.Dragons
+            .Include(dragon => dragon.Histories)
+            .FirstOrDefault(dragon => dragon.Id == id);
     }
 
     public List<Dragon> GetAll()
