@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using DragonsApp.Database;
+using DragonsApp.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // app services
+builder.Services
+    .AddScoped<IDragonRepository, DragonRepository>();
+builder.Services
+    .AddDbContext<DragonsDbContext>(options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
