@@ -26,7 +26,7 @@ public class DragonsController : ControllerBase
     public IActionResult Get(int id)
     {
         var dragon = _repository.Get(id);
-        return Ok(dragon);
+        return dragon != null ? Ok(dragon) : NotFound();
     }
 
     [HttpPost]
@@ -47,7 +47,7 @@ public class DragonsController : ControllerBase
         dragon.Id = id;
 
         var updated = _repository.Update(dragon);
-        return Ok(updated);
+        return updated != null ? Ok(updated) : NotFound();
     }
 
     [HttpDelete("{id}")]

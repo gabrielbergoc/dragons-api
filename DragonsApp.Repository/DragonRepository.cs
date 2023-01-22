@@ -1,5 +1,6 @@
 using DragonsApp.Database;
 using DragonsApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DragonsApp.Repository;
 
@@ -22,9 +23,17 @@ public class DragonRepository : IDragonRepository
     public bool Delete(int id)
     {
         var delete = new Dragon() { Id = id };
-        _db.Remove(delete);
-        var deleted = _db.SaveChanges();
-        return deleted > 0;
+        try
+        {
+            _db.Remove(delete);
+            _db.SaveChanges();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public Dragon? Get(int id)
@@ -42,10 +51,17 @@ public class DragonRepository : IDragonRepository
         throw new NotImplementedException();
     }
 
-    public Dragon Update(Dragon dragon)
+    public Dragon? Update(Dragon dragon)
     {
-        var updated = _db.Update(dragon).Entity;
-        _db.SaveChanges();
-        return updated;
+        try
+        {
+            var updated = _db.Update(dragon).Entity;
+            _db.SaveChanges();
+            return updated;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return null;
+        }
     }
 }
