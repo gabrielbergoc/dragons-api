@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddScoped<IDragonRepository, DragonRepository>();
 builder.Services
-    .AddDbContext<DragonsDbContext>(options => options.UseSqlServer(connectionString));
+    .AddDbContext<DragonsDbContext>();
 
 var app = builder.Build();
 
