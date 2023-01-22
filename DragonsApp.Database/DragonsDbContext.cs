@@ -11,6 +11,8 @@ public class DragonsDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder
+            // .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
+            // .EnableSensitiveDataLogging()
             .UseSqlServer("data source=DESKTOP-Q3DBTVQ;initial catalog=Dragons;trusted_connection=true;Trust Server Certificate=true");
     }
 

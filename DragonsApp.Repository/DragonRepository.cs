@@ -55,13 +55,41 @@ public class DragonRepository : IDragonRepository
 
     public Dragon? Update(Dragon dragon)
     {
-        try
+        var found = _db.Dragons
+            .AsNoTracking()
+            .Include(dragon_ => dragon_.Histories)
+            .FirstOrDefault(dragon_ => dragon_.Id == dragon.Id);
+
+        if (found != null)
         {
+            if (dragon.Histories != null)
+            {
+                if (found.Histories != null)
+                {
+                    foreach (var history in found.Histories)
+                    {
+                        if (!dragon.Histories.Any(history_ => history_.Id == history.Id))
+                        {
+                            _db.Remove(history);
+                        }
+                    }
+                }
+                _db.SaveChanges();
+                _db.ChangeTracker.Clear();
+                foreach (var history in dragon.Histories)
+                {
+                    if (history.Id != 0)
+                    {
+                        _db.Update(history);
+                    }
+                }
+            }
+            dragon.CreatedAt = found.CreatedAt;
             var updated = _db.Update(dragon).Entity;
             _db.SaveChanges();
             return updated;
         }
-        catch (DbUpdateConcurrencyException)
+        else
         {
             return null;
         }
